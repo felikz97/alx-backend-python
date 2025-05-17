@@ -7,7 +7,7 @@ def connect_to_db():
             host='localhost',
             user='root',
             password='Felikz@254',
-            database='ALX_prodev'  # Replace with your schema name
+            database='ALX_prodev'
         )
         if connection.is_connected():
             print("Connected to database")

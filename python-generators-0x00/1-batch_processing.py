@@ -13,7 +13,7 @@ def stream_users_in_batches(batch_size):
         cursor = connection.cursor(dictionary=True)
         cursor.execute("SELECT user_id, name, email, age FROM user_data")
 
-        while True:  # ✅ loop 1
+        while True:  
             batch = cursor.fetchmany(batch_size)
             if not batch:
                 break
@@ -33,10 +33,10 @@ def batch_processing(batch_size):
     """Filters users over age 25 and returns them."""
     results = []
 
-    for batch in stream_users_in_batches(batch_size):  # ✅ loop 2
+    for batch in stream_users_in_batches(batch_size):
         filtered = (user for user in batch if user['age'] > 25)
-        for user in filtered:  # ✅ loop 3
-            print(user)         # optional: log or process
+        for user in filtered:  
+            print(user)         
             results.append(user)
 
-    return results  # ✅ REQUIRED: return filtered results
+    return results  
