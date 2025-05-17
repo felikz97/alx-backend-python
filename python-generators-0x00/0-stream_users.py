@@ -9,15 +9,22 @@ def stream_users():
             password='Felikz@254',
             database='ALX_prodev'
         )
-        if connection.is_connected():
-            cursor = connection.cursor()
-            cursor.execute("SELECT * FROM user_data;")
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("SELECT user_id, name, email, age FROM user_data LIMIT 6")
 
-            for row in cursor:  # Only 1 loop here
-                yield row
+        for row in cursor:  # Single loop: MySQL cursor streams rows
+            yield row
 
-            cursor.close()
-            connection.close()
     except Error as e:
-        print(f"Database error: {e}")
-        return
+        print(f"Error: {e}")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+# Example usage (can be removed if using only as a module)
+if __name__ == "__main__":
+    for user in stream_users():
+        print(user)
