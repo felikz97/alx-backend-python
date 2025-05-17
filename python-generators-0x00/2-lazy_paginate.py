@@ -2,10 +2,6 @@ import mysql.connector
 from mysql.connector import Error
 
 def paginate_users(page_size, offset):
-    """
-    Fetches one page of user records using LIMIT and OFFSET.
-    Returns a list of rows.
-    """
     try:
         connection = mysql.connector.connect(
             host='localhost',
@@ -14,17 +10,12 @@ def paginate_users(page_size, offset):
             database='ALX_prodev'
         )
         cursor = connection.cursor(dictionary=True)
-        query = """
-            SELECT user_id, name, email, age
-            FROM user_data
-            ORDER BY user_id
-            LIMIT %s OFFSET %s
-        """
+        query = "SELECT * FROM user_data LIMIT %s OFFSET %s"  
         cursor.execute(query, (page_size, offset))
         return cursor.fetchall()
 
     except Error as e:
-        print(f"Error during pagination: {e}")
+        print(f"Database error: {e}")
         return []
 
     finally:
@@ -35,10 +26,14 @@ def paginate_users(page_size, offset):
 
 
 def lazy_paginate(page_size):
+    """
+    Generator that lazily yields pages of users from the user_data table.
+    Uses only one loop.
+    """
     offset = 0
     while True: 
         page = paginate_users(page_size, offset)
         if not page:
             break
-        yield page  
+        yield page 
         offset += page_size
