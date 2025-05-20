@@ -1,11 +1,11 @@
 import sqlite3
 import functools
-from datetime import datetime  # Useful for timestamps or logging
+
 
 def with_db_connection(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        conn = sqlite3.connect('users.db')  # Use your actual DB path
+        conn = sqlite3.connect('users.db')
         try:
             result = func(conn, *args, **kwargs)
             return result
