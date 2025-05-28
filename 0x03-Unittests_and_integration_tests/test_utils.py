@@ -6,7 +6,8 @@ from parameterized import parameterized
 from utils import get_json, memoize, access_nested_map
 
 
-class TestAccessNestedMap(unittest.TestCase):#  pylint: disable=missing
+class TestAccessNestedMap(unittest.TestCase):
+    """Unit tests for the access_nested_map function."""
     @parameterized.expand([
         ({"a": 1}, ("a",), 1),
         ({"a": {"b": 2}}, ("a",), {"b": 2}),
