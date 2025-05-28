@@ -41,24 +41,20 @@ class TestGetJson(unittest.TestCase):
 
 
 
-class TestMemoize(unittest.TestCase): 
-    
+class TestMemoize(unittest.TestCase):
     
     def test_memoize(self):
         class TestClass:
             def a_method(self):
                 return 79
-
             @memoize
             def a_property(self):
                 return self.a_method()
-
         instance = TestClass()
-
         with patch.object(
-            instance, 
-            'a_method', 
-            return_value=79) as mock_method: 
+            instance,
+            'a_method',
+            return_value=79) as mock_method:
             # Call a_property twice
             result1 = instance.a_property
             result2 = instance.a_property
@@ -66,8 +62,6 @@ class TestMemoize(unittest.TestCase):
             # Both calls should return 79
             self.assertEqual(result1, 79)
             self.assertEqual(result2, 79)
-
-            
             mock_method.assert_called_once()
 
 
