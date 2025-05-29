@@ -147,3 +147,22 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             client.public_repos(license="apache-2.0"),
             self.apache2_repos
         )
+
+def test_public_repos(self):
+    """
+    Test that GithubOrgClient.public_repos returns the correct
+    list of public repositories based on the repos_payload fixture.
+    """
+    client = GithubOrgClient("google")
+    repos = client.public_repos()
+    self.assertEqual(repos, self.expected_repos)
+
+
+def test_public_repos_with_license(self):
+    """
+    Test that GithubOrgClient.public_repos filters repositories
+    by the apache-2.0 license and returns the expected list.
+    """
+    client = GithubOrgClient("google")
+    repos = client.public_repos(license="apache-2.0")
+    self.assertEqual(repos, self.apache2_repos)
