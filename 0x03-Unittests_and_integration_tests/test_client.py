@@ -59,7 +59,7 @@ class TestGithubOrgClient(unittest.TestCase):
     """Unit tests for GithubOrgClient public_repos method."""
     @patch("client.get_json")
     def test_public_repos(self, mock_get_json):
-        # Set up fake repo data
+        """Test that public_repos returns a list of repository names."""
         fake_repos = [
             {"name": "repo1"},
             {"name": "repo2"},
