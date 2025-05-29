@@ -105,6 +105,8 @@ class TestGithubOrgClient(unittest.TestCase):
 
 """Integration tests for GithubOrgClient public_repos method."""
 @parameterized_class([
+    
+    
     {
         "org_payload": TEST_PAYLOAD["org_payload"],
         "repos_payload": TEST_PAYLOAD["repos_payload"],
