@@ -102,6 +102,7 @@ class TestGithubOrgClient(unittest.TestCase):
 
 
 
+
 @parameterized_class([
     {
         "org_payload": TEST_PAYLOAD["org_payload"],
@@ -117,9 +118,8 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     def setUpClass(cls):
         """Start patching requests.get and set return values based on URL"""
         cls.get_patcher = patch("requests.get")
-
         mock_get = cls.get_patcher.start()
-        # Setup side_effect to return different payloads based on the URL
+
         def side_effect(url):
             mock_response = MagicMock()
             if url.endswith("/orgs/google"):
@@ -147,22 +147,3 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             client.public_repos(license="apache-2.0"),
             self.apache2_repos
         )
-
-def test_public_repos(self):
-    """
-    Test that GithubOrgClient.public_repos returns the correct
-    list of public repositories based on the repos_payload fixture.
-    """
-    client = GithubOrgClient("google")
-    repos = client.public_repos()
-    self.assertEqual(repos, self.expected_repos)
-
-
-def test_public_repos_with_license(self):
-    """
-    Test that GithubOrgClient.public_repos filters repositories
-    by the apache-2.0 license and returns the expected list.
-    """
-    client = GithubOrgClient("google")
-    repos = client.public_repos(license="apache-2.0")
-    self.assertEqual(repos, self.apache2_repos)
