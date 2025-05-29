@@ -154,3 +154,8 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             client.public_repos(license="apache-2.0"),
             self.apache2_repos
         )
+print("TYPE OF TEST_PAYLOAD:", type(TEST_PAYLOAD))
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
+    print("Running integration tests...")
+    print("Integration tests completed.")
