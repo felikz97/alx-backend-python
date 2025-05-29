@@ -36,7 +36,6 @@ class TestGithubOrgClient(unittest.TestCase):
     """Unit tests for GithubOrgClient _public_repos_url property."""
     def test_public_repos_url(self):
         """Test that _public_repos_url returns the correct URL."""
-        """Test that _public_repos_url returns the correct URL."""
         test_payload = (
             {"repos_url": "https://api.github.com/orgs/testorg/repos"}
         )
