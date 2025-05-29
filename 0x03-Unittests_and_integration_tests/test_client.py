@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Unit tests for GithubOrgClient class."""
 import unittest
 from unittest.mock import patch, PropertyMock
 from parameterized import parameterized
@@ -14,6 +15,7 @@ class TestGithubOrgClient(unittest.TestCase):
     ])
     @patch("client.get_json")  # <- patch where get_json is used
     def test_org(self, org_name, mock_get_json):
+        """Test that org method returns the expected organization data."""
         expected = {"login": org_name, "type": "Organization"}
         mock_get_json.return_value = expected
 
@@ -31,7 +33,9 @@ if __name__ == "__main__":
 
 
 class TestGithubOrgClient(unittest.TestCase):
+    """Unit tests for GithubOrgClient _public_repos_url property."""
     def test_public_repos_url(self):
+        """Test that _public_repos_url returns the correct URL."""
         test_payload = (
             {"repos_url": "https://api.github.com/orgs/testorg/repos"}
         )
@@ -52,6 +56,7 @@ if __name__ == "__main__":
 
 
 class TestGithubOrgClient(unittest.TestCase):
+    """Unit tests for GithubOrgClient public_repos method."""	
     @patch("client.get_json")
     def test_public_repos(self, mock_get_json):
         # Set up fake repo data
@@ -81,3 +86,4 @@ class TestGithubOrgClient(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+    
