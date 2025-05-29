@@ -86,3 +86,17 @@ class TestGithubOrgClient(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+class TestGithubOrgClient(unittest.TestCase):
+    """Unit tests for GithubOrgClient"""
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False),
+    ])
+    def test_has_license(self, repo, license_key, expected):
+        """Test GithubOrgClient.has_license with different license keys"""
+        client = GithubOrgClient("any_org")  # org_name doesn't matter here
+        result = client.has_license(repo, license_key)
+        self.assertEqual(result, expected)
+        
