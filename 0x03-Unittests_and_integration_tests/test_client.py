@@ -107,17 +107,9 @@ class TestGithubOrgClient(unittest.TestCase):
 
 
 @parameterized_class([
-    """google",  # org_name""",
-    
-        {
-            "org_name": "google",
-            "org_payload": TEST_PAYLOAD["org_payload"],
-            "repos_payload": TEST_PAYLOAD["repos_payload"],
-            "expected_repos": TEST_PAYLOAD["expected_repos"],
-            "apache2_repos": TEST_PAYLOAD["apache2_repos"],
-        },
-        {
-        "org_name": "google",
+
+
+    {
         "org_payload": TEST_PAYLOAD["org_payload"],
         "repos_payload": TEST_PAYLOAD["repos_payload"],
         "expected_repos": TEST_PAYLOAD["expected_repos"],
