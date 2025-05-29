@@ -36,6 +36,7 @@ class TestGithubOrgClient(unittest.TestCase):
     """Unit tests for GithubOrgClient _public_repos_url property."""
     def test_public_repos_url(self):
         """Test that _public_repos_url returns the correct URL."""
+        """Test that _public_repos_url returns the correct URL."""
         test_payload = (
             {"repos_url": "https://api.github.com/orgs/testorg/repos"}
         )
@@ -56,7 +57,7 @@ if __name__ == "__main__":
 
 
 class TestGithubOrgClient(unittest.TestCase):
-    """Unit tests for GithubOrgClient public_repos method."""	
+    """Unit tests for GithubOrgClient public_repos method."""
     @patch("client.get_json")
     def test_public_repos(self, mock_get_json):
         # Set up fake repo data
@@ -86,4 +87,3 @@ class TestGithubOrgClient(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
-    
