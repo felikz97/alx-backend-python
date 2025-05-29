@@ -90,6 +90,7 @@ if __name__ == "__main__":
 class TestGithubOrgClient(unittest.TestCase):
     """Unit tests for GithubOrgClient"""
 
+
     @parameterized.expand([
         ({"license": {"key": "my_license"}}, "my_license", True),
         ({"license": {"key": "other_license"}}, "my_license", False),
@@ -101,8 +102,7 @@ class TestGithubOrgClient(unittest.TestCase):
         self.assertEqual(result, expected)
 
 
-
-
+"""Integration tests for GithubOrgClient public_repos method."""
 @parameterized_class([
     {
         "org_payload": TEST_PAYLOAD["org_payload"],
@@ -130,6 +130,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
         mock_get.side_effect = side_effect
 
+    """Stop patching requests.get after tests are done"""
     @classmethod
     def tearDownClass(cls):
         """Stop the patcher"""
@@ -147,3 +148,4 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             client.public_repos(license="apache-2.0"),
             self.apache2_repos
         )
+        
