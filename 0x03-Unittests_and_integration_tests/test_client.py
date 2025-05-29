@@ -107,9 +107,26 @@ class TestGithubOrgClient(unittest.TestCase):
 
 
 @parameterized_class([
+    """google",  # org_name""",
+    TEST_PAYLOAD = {
+        "org_payload": {
+            "login": "google",
+            "repos_url": "https://api.github.com/orgs/google/repos"
+        },
+        "repos_payload": [
+            {"name": "repo1", "license": {"key": "apache-2.0"}},
+            {"name": "repo2", "license": {"key": "mit"}},
+            {"name": "repo3", "license": {"key": "apache-2.0"}}
+        ],
+        "expected_repos": ["repo1", "repo2", "repo3"],
+        "apache2_repos": ["repo1", "repo3"]
+    }
+    
+    
 
 
     {
+        "org_name": "google",
         "org_payload": TEST_PAYLOAD["org_payload"],
         "repos_payload": TEST_PAYLOAD["repos_payload"],
         "expected_repos": TEST_PAYLOAD["expected_repos"],
@@ -126,6 +143,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         mock_get = cls.get_patcher.start()
 
         def side_effect(url):
+            """Mock side effect for requests.get based on URL"""
             mock_response = MagicMock()
             if url.endswith("/orgs/google"):
                 mock_response.json.return_value = cls.org_payload
@@ -138,7 +156,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Stop patching requests.get after tests are done"""
     @classmethod
     def tearDownClass(cls):
-        """Stop the patcher"""
+        """Stop patching requests.get"""
         cls.get_patcher.stop()
 
     def test_public_repos(self):
