@@ -4,6 +4,7 @@ from unittest.mock import patch, PropertyMock
 from parameterized import parameterized
 from client import GithubOrgClient  # your class under test
 
+
 class TestGithubOrgClient(unittest.TestCase):
     """Unit tests for GithubOrgClient."""
 
@@ -22,8 +23,10 @@ class TestGithubOrgClient(unittest.TestCase):
         mock_get_json.assert_called_once_with(f"https://api.github.com/orgs/{org_name}")
         self.assertEqual(result, expected)
 
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
 
 class TestGithubOrgClient(unittest.TestCase):
     def test_public_repos_url(self):
@@ -40,8 +43,8 @@ class TestGithubOrgClient(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
-    
-    
+
+
 class TestGithubOrgClient(unittest.TestCase):
     @patch("client.get_json")
     def test_public_repos(self, mock_get_json):
