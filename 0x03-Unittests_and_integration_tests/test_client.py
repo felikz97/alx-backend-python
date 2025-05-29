@@ -6,6 +6,7 @@ from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient  # your class under test
 from fixtures import TEST_PAYLOAD
 
+
 class TestGithubOrgClient(unittest.TestCase):
     """Unit tests for GithubOrgClient."""
 
@@ -87,9 +88,9 @@ class TestGithubOrgClient(unittest.TestCase):
 if __name__ == "__main__":
     unittest.main(verbosity=2)
 
+
 class TestGithubOrgClient(unittest.TestCase):
     """Unit tests for GithubOrgClient"""
-
 
     @parameterized.expand([
         ({"license": {"key": "my_license"}}, "my_license", True),
@@ -148,4 +149,3 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             client.public_repos(license="apache-2.0"),
             self.apache2_repos
         )
-        
