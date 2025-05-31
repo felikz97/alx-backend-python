@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import CustomUser, Conversation, Message
 from rest_framework.exceptions import ValidationError
-
+from rest_framework.exceptions import ValidationError
 # --- USER SERIALIZER ---
 class UserSerializer(serializers.ModelSerializer):
     phone_number = serializers.CharField(required=False)
@@ -63,20 +63,28 @@ class ConversationCreateSerializer(serializers.ModelSerializer):
         conversation.participants.set(participants)
         return conversation
 # --- MESSAGE CREATE SERIALIZER ---
-class MessageCreateSerializer(serializers.ModelSerializer):
-    sender = serializers.PrimaryKeyRelatedField(
-        queryset=CustomUser.objects.all(),
-        write_only=True
+class ConversationCreateSerializer(serializers.ModelSerializer):
+    participants = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=CustomUser.objects.all()
     )
 
     class Meta:
-        model = Message
-        fields = ['message_id', 'conversation', 'sender', 'message_body']
+        model = Conversation
+        fields = ['conversation_id', 'participants']
 
-    def validate(self, attrs):
-        if not attrs.get('conversation'):
-            raise ValidationError("Conversation must be specified.")
-        return attrs
+    def validate_participants(self, value):
+        if len(value) < 2:
+            raise ValidationError("A conversation must include at least two participants.")
+        return value
 
     def create(self, validated_data):
-        return Message.objects.create(**validated_data)
+        participants = validated_data.pop('participants')
+        
+        # Optional: Check for existing conversation with same participants
+        # if Conversation.objects.filter(participants__in=participants).distinct().count() == len(participants):
+        #     raise ValidationError("A conversation with these participants already exists.")
+        
+        conversation = Conversation.objects.create()
+        conversation.participants.set(participants)
+        return conversation
