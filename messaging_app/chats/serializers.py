@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import CustomUser, Conversation, Message
 from rest_framework.exceptions import ValidationError
-from rest_framework.exceptions import ValidationError
+from rest_framework.serializers import ValidationError
 # --- USER SERIALIZER ---
 class UserSerializer(serializers.ModelSerializer):
     phone_number = serializers.CharField(required=False)
