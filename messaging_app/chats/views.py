@@ -1,4 +1,6 @@
 from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, status
+from rest_framework.response import Response
 from .models import Conversation, Message
 from .serializers import (
     ConversationSerializer,
@@ -16,10 +18,12 @@ class ConversationViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         return ConversationCreateSerializer if self.action == 'create' else ConversationSerializer
 
-    def perform_create(self, serializer):
-        conversation = serializer.save()
-        conversation.participants.add(self.request.user)
-
+    def perform_create(self, request, serializer):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
@@ -31,5 +35,9 @@ class MessageViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         return MessageCreateSerializer if self.action == 'create' else MessageSerializer
 
-    def perform_create(self, serializer):
-        serializer.save(sender=self.request.user)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
