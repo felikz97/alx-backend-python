@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    password = models.CharField(max_length=128)  # This will be handled securely by Django
+    # This will be handled securely by Django
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']  # username is still needed unless removed completely
