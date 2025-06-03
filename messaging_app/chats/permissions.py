@@ -1,6 +1,6 @@
 # messaging_app/chats/permissions.py
 
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 class IsOwnerOrReadOnly(BasePermission):
     """

@@ -88,3 +88,16 @@ class ConversationCreateSerializer(serializers.ModelSerializer):
         conversation = Conversation.objects.create()
         conversation.participants.set(participants)
         return conversation
+
+class MessageCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ['conversation', 'sender', 'message_body']
+    def validate(self, data):
+        if 'conversation' not in data:
+            raise ValidationError("Conversation is required.")
+        if 'sender' not in data:
+            raise ValidationError("Sender is required.")
+        if 'message_body' not in data:
+            raise ValidationError("Message body is required.")
+        return data

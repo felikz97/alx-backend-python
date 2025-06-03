@@ -7,8 +7,11 @@ from .serializers import (
     ConversationSerializer,
     MessageSerializer,
     ConversationCreateSerializer,
+    MessageCreateSerializer
 )
 
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import MessageFilter
 
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
@@ -27,13 +30,16 @@ class ConversationViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class MessageViewSet(viewsets.ModelViewSet):
-    queryset = Message.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
-    permission_classes = [IsParticipantOfConversation]
-    filter_backends = [filters.OrderingFilter]
+    serializer_class = MessageSerializer
+    permission_classes = [permissions.IsAuthenticated, IsParticipantOfConversation]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_class = MessageFilter
     ordering_fields = ['sent_at']
     ordering = ['-sent_at']
-    
+
+    def get_queryset(self):
+        # Only return messages from conversations the user participates in
+        return Message.objects.filter(conversation__participants=self.request.user)
 
     def get_serializer_class(self):
         return MessageCreateSerializer if self.action == 'create' else MessageSerializer
@@ -41,21 +47,10 @@ class MessageViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            conversation = serializer.validated_data['conversation']
+            if request.user not in conversation.participants.all():
+                return Response({"detail": "You are not a participant in this conversation."},
+                                status=status.HTTP_403_FORBIDDEN)
+            serializer.save(sender=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-class MessageViewSet(viewsets.ModelViewSet):
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
-    permission_classes = [IsParticipantOfConversation]
-
-    def get_queryset(self):
-        # Filter only messages where the user is a participant
-        return Message.objects.filter(conversation__participants=self.request.user)
-
-    def perform_create(self, serializer):
-        # Only allow creation if user is a participant
-        conversation = serializer.validated_data['conversation']
-        if self.request.user not in conversation.participants.all():
-            raise PermissionDenied("You are not a participant in this conversation.")
-        serializer.save(sender=self.request.user)
