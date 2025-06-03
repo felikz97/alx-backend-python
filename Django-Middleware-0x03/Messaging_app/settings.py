@@ -164,6 +164,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # Default primary key field type
+AUTH_USER_MODEL = 'chats.CustomUser'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 AUTH_USER_MODEL = 'chats.CustomUser'
 
