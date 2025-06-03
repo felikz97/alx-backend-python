@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'chats',
     'rest_framework',
     'corsheaders',
+    'rest_framework_simplejwt'
 ]
 
 REST_FRAMEWORK = {
@@ -52,7 +53,19 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         # Optionally:
         # 'rest_framework.authentication.BasicAuthentication',
-    ]
+    ],
+    
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 
@@ -64,7 +77,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'messaging_app.urls'
 
