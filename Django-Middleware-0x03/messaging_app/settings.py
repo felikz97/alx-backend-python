@@ -15,6 +15,12 @@ from datetime import timedelta
 
 import os
 
+from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'chats.settings')
+
+application = get_wsgi_application()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -48,7 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'chats.apps.ChatsConfig',
+    'chats.apps.ChatsConfig'
 ]
 
 REST_FRAMEWORK = {
@@ -114,6 +120,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'chats.middleware.RequestLoggingMiddleware',
+    'chats.middleware.RestrictAccessByTimeMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -135,7 +142,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'messaging_app.wsgi.application'
+
 
 
 # Database
