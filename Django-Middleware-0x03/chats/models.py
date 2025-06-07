@@ -10,10 +10,17 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
-    # This will be handled securely by Django
+    
+    # Add role field
+    ROLE_CHOICES = [
+        ('admin', 'Admin'),
+        ('moderator', 'Moderator'),
+        ('user', 'User'),
+    ]
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']  # username is still needed unless removed completely
+    REQUIRED_FIELDS = ['username']  # Required unless you remove username entirely
 
     def __str__(self):
         return self.email

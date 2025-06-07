@@ -75,13 +75,13 @@ class RolePermissionMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        # Optional: limit role checks to specific paths like /chat/admin-action/
-        if request.path.startswith('/chat/'):  # Adjust this to your protected path
+        # Optional: scope to certain endpoints like /chat/
+        if request.path.startswith('/chat/'):
             if request.user.is_authenticated:
-                user_role = getattr(request.user, 'role', None)
-                if user_role not in ['admin', 'moderator']:
-                    return HttpResponseForbidden("403 Forbidden: You do not have permission to access this resource.")
+                role = getattr(request.user, 'role', None)
+                if role not in ['admin', 'moderator']:
+                    return HttpResponseForbidden("403 Forbidden: Insufficient permissions.")
             else:
                 return HttpResponseForbidden("403 Forbidden: Authentication required.")
-
+        
         return self.get_response(request)
