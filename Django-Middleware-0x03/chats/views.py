@@ -9,6 +9,7 @@ from .serializers import (
     ConversationCreateSerializer,
     MessageCreateSerializer
 )
+from chats.pagination import ChatPagination
 
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import MessageFilter
@@ -18,6 +19,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['participants__username']
+    pagination_class = ChatPagination
 
     def get_serializer_class(self):
         return ConversationCreateSerializer if self.action == 'create' else ConversationSerializer
