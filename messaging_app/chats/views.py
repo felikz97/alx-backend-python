@@ -12,6 +12,7 @@ from .serializers import (
 
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import MessageFilter
+from .pagination import MessagePagination
 
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
