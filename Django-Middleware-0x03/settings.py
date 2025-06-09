@@ -94,7 +94,9 @@ MIDDLEWARE = [
     'chats.middleware.RequestLoggingMiddleware',
     'chats.middleware.RestrictAccessByTimeMiddleware',
     'chats.middleware.RolepermissionMiddleware',
+    'chats.middleware.RateLimitMiddleware',
     'chats.middleware.OffensiveLanguageMiddleware',
+    
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
