@@ -90,10 +90,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
-    'chats.middleware.RequestLoggingMiddleware'
-    'chats.middleware.RestrictAccessByTimeMiddleware'
-    'chats.middleware.RolepermissionMiddleware'
+    'corsheaders.middleware.CorsMiddleware',
+    'chats.middleware.RequestLoggingMiddleware',
+    'chats.middleware.RestrictAccessByTimeMiddleware',
+    'chats.middleware.RolepermissionMiddleware',
+    'chats.middleware.OffensiveLanguageMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
