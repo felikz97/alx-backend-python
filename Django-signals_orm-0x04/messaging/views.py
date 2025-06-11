@@ -3,9 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
-from .models import Message, Notification, MessageHistory
-from django.http import HttpResponse, request
-from django.db.models import Prefetch, Q, Count, F
+from .models import Message, Notification
+from django.http import HttpResponse
+from django.db.models import Prefetch 
+from django.views.decorators.cache import cache_page
 
 @login_required
 def delete_user(request):
@@ -63,3 +64,12 @@ def user_threaded_messages(request):
 def unread_inbox(request):
     unread_messages = Message.unread.unread_for_user(request.user)
     return render(request, 'messaging/unread_inbox.html', {'messages': unread_messages})
+
+@cache_page(60 * 15)  # Cache for 15 minutes
+@login_required
+def user_threaded_messages(request):
+    user = request.user
+    messages = Message.objects.filter(receiver=user, sender=request.user, parent_message__isnull=True).select_related('sender', 'receiver').prefetch_related(
+        Prefetch('replies', queryset=Message.objects.select_related('sender', 'receiver'))
+    ).only('id', 'sender', 'receiver', 'content', 'timestamp').order_by('-timestamp')
+    return render(request, 'messaging/threaded_messages.html', {'messages': messages})
