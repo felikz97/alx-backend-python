@@ -46,6 +46,16 @@ def user_messages(request, username):
 @login_required
 def user_threaded_messages(request):
     user = request.user
+    sender = request.user
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        parent_message_id = request.POST.get('parent_message_id')
+        parent_message = None
+        if parent_message_id:
+            parent_message = get_object_or_404(Message, id=parent_message_id)
+        
+        message = Message.objects.create(sender=sender, receiver=user, content=content, parent_message=parent_message)
+        Notification.objects.create(user=user, message=message)
     messages = Message.objects.filter(receiver=user, parent_message__isnull=True).select_related('sender', 'receiver').prefetch_related(
         Prefetch('replies', queryset=Message.objects.select_related('sender', 'receiver'))
     ).order_by('-timestamp')
