@@ -4,7 +4,7 @@ from django.contrib.auth import logout
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from .models import Message, Notification, MessageHistory
-from django.http import HttpResponse
+from django.http import HttpResponse, request
 from django.db.models import Prefetch, Q, Count, F
 
 @login_required
@@ -50,3 +50,10 @@ def user_threaded_messages(request):
         Prefetch('replies', queryset=Message.objects.select_related('sender', 'receiver'))
     ).order_by('-timestamp')
     return render(request, 'messaging/threaded_messages.html', {'messages': messages})
+
+@login_required
+def mark_notification_as_read(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    notification.is_read = True
+    notification.save()
+    return redirect('user_messages', username=request.user.username)
