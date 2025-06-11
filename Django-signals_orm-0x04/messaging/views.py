@@ -58,3 +58,9 @@ def user_threaded_messages(request):
         Prefetch('replies', queryset=Message.objects.select_related('sender', 'receiver'))
     ).order_by('-timestamp')
     return render(request, 'messaging/threaded_messages.html', {'messages': messages})
+
+
+@login_required
+def unread_inbox(request):
+    unread_messages = Message.unread.for_user(request.user)
+    return render(request, 'messaging/unread_inbox.html', {'messages': unread_messages})

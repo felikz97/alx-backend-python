@@ -2,6 +2,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class UnreadMessagesManager(models.Manager):
+    def for_user(self, user):
+        return self.get_queryset().filter(receiver=user, read=False).only('id', 'content', 'sender', 'timestamp')
+
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
@@ -9,12 +13,23 @@ class Message(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     edited = models.BooleanField(default=False)
     edited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='edited_messages')
-    edited_at = models.DateTimeField(auto_now=True)
-    parent_message = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', null=True, blank=True)
-    is_read = models.BooleanField(default=False)
+    parent_message = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
+    read = models.BooleanField(default=False)
+
+    objects = models.Manager()  # Default manager
+    unread = UnreadMessagesManager()  # Custom manager for unread messages
 
     def __str__(self):
         return f"Message from {self.sender} to {self.receiver} at {self.timestamp}"
+
+    def get_all_replies(self):
+        replies = []
+        def recursive_fetch(message):
+            for reply in message.replies.all():
+                replies.append(reply)
+                recursive_fetch(reply)
+        recursive_fetch(self)
+        return replies
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')

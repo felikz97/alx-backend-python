@@ -55,3 +55,11 @@ class NotificationSignalTestCase(TestCase):
         self.assertIn(reply1, replies)
         self.assertIn(reply2, replies)
         self.assertEqual(len(replies), 2)
+
+    def test_unread_messages_manager(self):
+        Message.objects.create(sender=self.sender, receiver=self.receiver, content='Unread 1')
+        Message.objects.create(sender=self.sender, receiver=self.receiver, content='Unread 2')
+        Message.objects.create(sender=self.sender, receiver=self.receiver, content='Read', read=True)
+        unread = Message.unread.for_user(self.receiver)
+        self.assertEqual(unread.count(), 2)
+        self.assertTrue(all(msg.read is False for msg in unread))
