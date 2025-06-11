@@ -51,14 +51,13 @@ def delete_user(request):
     user.delete()
     return redirect('home')  # adjust redirect target as needed
 
-@login_required
+login_required
 def user_threaded_messages(request):
     user = request.user
     messages = Message.objects.filter(receiver=user, sender=request.user, parent_message__isnull=True).select_related('sender', 'receiver').prefetch_related(
         Prefetch('replies', queryset=Message.objects.select_related('sender', 'receiver'))
-    ).order_by('-timestamp')
+    ).only('id', 'sender', 'receiver', 'content', 'timestamp').order_by('-timestamp')
     return render(request, 'messaging/threaded_messages.html', {'messages': messages})
-
 
 @login_required
 def unread_inbox(request):
