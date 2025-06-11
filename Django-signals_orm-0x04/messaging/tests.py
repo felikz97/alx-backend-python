@@ -1,7 +1,7 @@
 # messaging/tests.py
 from django.test import TestCase
 from django.contrib.auth.models import User
-from .models import Message, Notification
+from .models import Message, Notification, MessageHistory
 
 class NotificationSignalTestCase(TestCase):
     def setUp(self):
@@ -15,3 +15,12 @@ class NotificationSignalTestCase(TestCase):
         self.assertEqual(notification.user, self.receiver)
         self.assertEqual(notification.message, message)
         self.assertFalse(notification.is_read)
+
+    def test_message_edit_logs_history(self):
+        message = Message.objects.create(sender=self.sender, receiver=self.receiver, content='Original message')
+        message.content = 'Edited message'
+        message.save()
+        history = MessageHistory.objects.filter(message=message).first()
+        self.assertIsNotNone(history)
+        self.assertEqual(history.old_content, 'Original message')
+        self.assertTrue(message.edited)
