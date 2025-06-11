@@ -46,3 +46,12 @@ class NotificationSignalTestCase(TestCase):
         # Verify the status
         updated_notification = Notification.objects.get(id=notification.id)
         self.assertTrue(updated_notification.is_read)
+    
+    def test_threaded_conversation(self):
+        root = Message.objects.create(sender=self.sender, receiver=self.receiver, content='Root message')
+        reply1 = Message.objects.create(sender=self.receiver, receiver=self.sender, content='Reply 1', parent_message=root)
+        reply2 = Message.objects.create(sender=self.sender, receiver=self.receiver, content='Reply 2', parent_message=reply1)
+        replies = root.get_all_replies()
+        self.assertIn(reply1, replies)
+        self.assertIn(reply2, replies)
+        self.assertEqual(len(replies), 2)
