@@ -1,35 +1,21 @@
-# Use official Python 3.10 image as base
+# Use official Python 3.10 base image
 FROM python:3.10
 
-# Set working directory
+# Set working directory in container
 WORKDIR /app
-
-# Copy dependency list
-COPY requirements.txt .
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy entire project into container
-COPY . .
-
-# Expose port used by Django
-EXPOSE 8000
-
-# Run Django server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-
-FROM python:3.10
-
-WORKDIR /app
-
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Optional: install MySQL client if using MySQL DB
 RUN apt-get update && apt-get install -y default-mysql-client
 
+# Copy project files into the container
 COPY . .
 
+# Expose Django default port
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# CMD should include "-p" in the runserver command
+CMD ["python3", "manage.py", "runserver", "-p", "8000", "0.0.0.0"]
