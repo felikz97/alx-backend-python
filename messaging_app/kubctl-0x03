@@ -1,0 +1,26 @@
+#!/bin/bash
+
+echo " Applying blue deployment with image v2.0..."
+kubectl apply -f blue_deployment.yaml
+
+echo " Monitoring rolling update progress..."
+kubectl rollout status deployment/django-blue
+
+echo " Sending test requests during update..."
+
+# Port-forward the service if not already exposed
+kubectl port-forward service/messaging-app-service 8000:8000 &
+PORT_FORWARD_PID=$!
+
+# Send test requests during update
+for i in {1..10}; do
+  sleep 1
+  echo -n "[$i] "
+  curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8000/
+done
+
+# Kill port-forward process
+kill $PORT_FORWARD_PID
+
+echo " Rolling update completed. Current pods:"
+kubectl get pods -l app=messaging-app
