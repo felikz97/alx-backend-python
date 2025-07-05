@@ -18,4 +18,4 @@ COPY . .
 EXPOSE 8000
 
 # CMD should include "-p" in the runserver command
-CMD ["python3", "manage.py", "runserver", "-p", "8000", "0.0.0.0"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
