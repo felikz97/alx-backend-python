@@ -2,12 +2,13 @@ pipeline {
     agent any
 
     tools {
-        python 'Python3' // must match Global Tool Configuration
+        python 'Pytho3'
     }
 
     environment {
-        // Make sure this matches the ID of your GitHub credentials in Jenkins
-        GITHUB_CREDENTIALS = 'your-credentials-id'
+        GITHUB_CREDENTIALS = 'your-github-creds-id'
+        DOCKER_CREDENTIALS = 'dockerhub-creds'
+        DOCKER_IMAGE = 'yourdockerhubusername/messaging_app:latest'
     }
 
     stages {
@@ -35,6 +36,25 @@ pipeline {
             post {
                 always {
                     junit 'report.xml'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t $DOCKER_IMAGE ./messaging_app"
+                }
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS}", usernameVariable: 'felikz254', passwordVariable: 'Felikz.254')]) {
+                    sh """
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push $DOCKER_IMAGE
+                    """
                 }
             }
         }
