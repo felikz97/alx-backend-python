@@ -14,4 +14,7 @@ PyJWT==2.9.0
 sqlparse==0.5.3
 tzdata==2025.2
 pytest
+flake8
 pytest-django
+pytest-cov
+mysqlclient
