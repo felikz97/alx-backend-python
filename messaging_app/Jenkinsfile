@@ -2,32 +2,39 @@ pipeline {
     agent any
 
     tools {
-        python 'Python3' // Set this up under Manage Jenkins > Global Tool Configuration
+        python 'Python3' // must match Global Tool Configuration
+    }
+
+    environment {
+        // Make sure this matches the ID of your GitHub credentials in Jenkins
+        GITHUB_CREDENTIALS = 'your-credentials-id'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Clone Repository') {
             steps {
-                git 'https://github.com/felikz97/alx-backend-python.git'
+                git branch: 'main',
+                    credentialsId: "${GITHUB_CREDENTIALS}",
+                    url: 'https://github.com/felikz97/alx-backend-python.git'
             }
         }
 
-        stage('Install dependencies') {
+        stage('Install Dependencies') {
             steps {
-                sh 'pip install -r messaging_app/requirements.txt'
+                sh 'pip3 install -r messaging_app/requirements.txt'
             }
         }
 
-        stage('Run tests') {
+        stage('Run Tests') {
             steps {
-                sh 'pytest messaging_app --junitxml=test-report.xml'
+                sh 'pytest messaging_app --junitxml=report.xml'
             }
         }
 
-        stage('Publish test report') {
+        stage('Publish Test Report') {
             post {
                 always {
-                    junit 'test-report.xml'
+                    junit 'report.xml'
                 }
             }
         }
